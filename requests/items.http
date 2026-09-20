@@ -1,0 +1,107 @@
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### Create item — expects 201
+# @name createItem
+POST {{baseUrl}}/api/items
+Content-Type: {{contentType}}
+
+{
+  "title": "El nombre del viento",
+  "description": "Primera parte de Crónica del Asesino de Reyes",
+  "type": "BOOK",
+  "year": 2007
+}
+
+> {%
+    client.global.set("itemId", response.body.id);
+    client.test("Create returns 201 and Location header", function() {
+        client.assert(response.status === 201, "Expected 201 but got " + response.status);
+        client.assert(response.headers.valueOf("Location") !== null, "Missing Location header");
+    });
+%}
+
+### List all items — expects 200
+GET {{baseUrl}}/api/items
+Accept: {{contentType}}
+
+> {%
+    client.test("List returns 200 and array", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+        client.assert(Array.isArray(response.body), "Body is not an array");
+    });
+%}
+
+### Get created item by id — expects 200
+GET {{baseUrl}}/api/items/{{itemId}}
+Accept: {{contentType}}
+
+> {%
+    client.test("Get returns 200 and matching id", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+        client.assert(response.body.id === client.global.get("itemId"), "ID mismatch");
+    });
+%}
+
+### Update created item — expects 200
+PUT {{baseUrl}}/api/items/{{itemId}}
+Content-Type: {{contentType}}
+
+{
+  "title": "El nombre del viento (edición revisada)",
+  "description": "Primera parte de Crónica del Asesino de Reyes",
+  "type": "BOOK",
+  "year": 2007
+}
+
+> {%
+    client.test("Update returns 200 and new title", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+        client.assert(response.body.title.includes("revisada"), "Title not updated");
+    });
+%}
+
+### Validation error (blank title) — expects 400
+POST {{baseUrl}}/api/items
+Content-Type: {{contentType}}
+
+{
+  "title": "",
+  "type": "BOOK"
+}
+
+> {%
+    client.test("Validation returns 400 with details", function() {
+        client.assert(response.status === 400, "Expected 400 but got " + response.status);
+        client.assert(response.body.details.length > 0, "Missing validation details");
+    });
+%}
+
+### Not found (unused id) — expects 404
+GET {{baseUrl}}/api/items/999999
+Accept: {{contentType}}
+
+> {%
+    client.test("Unknown id returns 404", function() {
+        client.assert(response.status === 404, "Expected 404 but got " + response.status);
+    });
+%}
+
+### Delete created item — expects 204
+DELETE {{baseUrl}}/api/items/{{itemId}}
+
+> {%
+    client.test("Delete returns 204", function() {
+        client.assert(response.status === 204, "Expected 204 but got " + response.status);
+    });
+%}
+
+### Get after delete — expects 404
+GET {{baseUrl}}/api/items/{{itemId}}
+Accept: {{contentType}}
+
+> {%
+    client.test("Deleted item returns 404", function() {
+        client.assert(response.status === 404, "Expected 404 but got " + response.status);
+    });
+%}

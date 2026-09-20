@@ -1,0 +1,60 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Logs ###
+*.log
+
+### Local H2 file database ###
+data/
+db/
+*.db
+*.mv.db
+*.trace.db
+
+### Spring Boot local configuration & secrets ###
+application-local.properties
+application-local.yml
+application-dev.properties
+application-prod.properties
+.env
+*.key
+*.pem
+*.p12
+*.jks
+
+### HTTP Client environment ###
+requests/http-client.env.json
+
+### AI agent tooling state ###
+.explyt/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
