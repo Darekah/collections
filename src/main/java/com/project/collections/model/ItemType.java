@@ -8,6 +8,7 @@ public enum ItemType {
     BOOK,
     COMIC,
     MOVIE,
-    SERIES
+    SERIES,
+    MANGA
 
 }
