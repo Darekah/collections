@@ -20,13 +20,11 @@ application-local.yml
 application-dev.properties
 application-prod.properties
 .env
+.devin/*.local.json
 *.key
 *.pem
 *.p12
 *.jks
-
-### HTTP Client environment ###
-requests/http-client.env.json
 
 ### AI agent tooling state ###
 .explyt/
@@ -58,3 +56,5 @@ build/
 
 ### VS Code ###
 .vscode/
+.neon
+node_modules/
