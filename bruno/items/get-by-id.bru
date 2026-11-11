@@ -1,0 +1,30 @@
+meta {
+  name: Get item by id
+  type: http
+  seq: 2
+}
+
+docs {
+  # Get item by id
+
+  Works for any concrete type. `{{itemId}}` is the shared primary key —
+  the same id resolves through `/api/items/{id}` and `/api/mangas/{id}`.
+  Set `itemId` in the `local` environment to an existing item id.
+}
+
+get {
+  url: {{baseUrl}}/api/items/{{itemId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: {{contentType}}
+}
+
+tests {
+  test("returns 200 with matching id", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().id).to.equal(Number(vars.get("itemId")));
+  });
+}

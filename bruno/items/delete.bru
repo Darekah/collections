@@ -1,0 +1,24 @@
+meta {
+  name: Delete item by id
+  type: http
+  seq: 3
+}
+
+docs {
+  # Delete item by id
+
+  Type-agnostic delete — removes the item and its subclass row
+  (e.g. a manga also loses its `mangas` row).
+}
+
+delete {
+  url: {{baseUrl}}/api/items/{{itemId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("returns 204", function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

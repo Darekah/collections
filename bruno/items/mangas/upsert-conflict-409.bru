@@ -1,0 +1,39 @@
+meta {
+  name: Upsert conflict (id + foreign ISBN)
+  type: http
+  seq: 8
+}
+
+docs {
+  # Upsert conflict — 409
+
+  `id` resolves to one manga while `isbn` belongs to a different one.
+  Requires `itemId` to point at an existing manga and `9788467941746`
+  to belong to a *different* manga (e.g. the Chainsaw Man volume).
+}
+
+post {
+  url: {{baseUrl}}/api/mangas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  {
+    "id": {{itemId}},
+    "title": "Conflicting Manga",
+    "author": "Someone",
+    "isbn": "9788467941746"
+  }
+}
+
+tests {
+  test("returns 409 when ISBN belongs to another manga", function() {
+    expect(res.getStatus()).to.equal(409);
+    expect(res.getBody().code).to.equal(409);
+  });
+}

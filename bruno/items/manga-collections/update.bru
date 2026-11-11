@@ -1,0 +1,33 @@
+meta {
+  name: Update manga collection
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/manga-collections/{{collectionId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  {
+    "title": "Berserk (Complete Edition)",
+    "originalTitle": "ベルセルク",
+    "description": "Dark fantasy series by Kentaro Miura (revised entry).",
+    "year": 1989,
+    "author": "Kentaro Miura",
+    "artist": "Kentaro Miura"
+  }
+}
+
+tests {
+  test("updates collection: 200", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().id).to.equal(Number(vars.get("collectionId")));
+  });
+}

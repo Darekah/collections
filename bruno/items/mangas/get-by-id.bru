@@ -1,0 +1,23 @@
+meta {
+  name: Get manga by id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/mangas/{{itemId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: {{contentType}}
+}
+
+tests {
+  test("returns 200 with matching id and type MANGA", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().id).to.equal(Number(vars.get("itemId")));
+    expect(res.getBody().type).to.equal("MANGA");
+  });
+}

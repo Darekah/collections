@@ -1,0 +1,17 @@
+meta {
+  name: Delete manga by id
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{baseUrl}}/api/mangas/{{itemId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("returns 204", function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

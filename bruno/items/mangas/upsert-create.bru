@@ -1,0 +1,48 @@
+meta {
+  name: Upsert manga (create, no collection)
+  type: http
+  seq: 3
+}
+
+docs {
+  # Upsert manga — create
+
+  `POST /api/mangas` accepts a single object or an array (upsert).
+  With no `id` and no matching `isbn`, a new manga is created.
+  Copy the returned `items[0].id` into `itemId` and `items[0].isbn`
+  stays normalized (spaces/hyphens stripped).
+}
+
+post {
+  url: {{baseUrl}}/api/mangas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  {
+    "title": "Chainsaw Man Vol. 1",
+    "originalTitle": "チェンソーマン 1",
+    "description": "Denji becomes a Devil Hunter.",
+    "year": 2019,
+    "author": "Tatsuki Fujimoto",
+    "artist": "Tatsuki Fujimoto",
+    "volumeNumber": 1,
+    "isbn": "978-84-679-4174-6"
+  }
+}
+
+tests {
+  test("creates manga: 200, createdCount=1", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().createdCount).to.equal(1);
+    expect(res.getBody().updatedCount).to.equal(0);
+    expect(res.getBody().items[0].type).to.equal("MANGA");
+    expect(res.getBody().items[0].isbn).to.equal("9788467941746");
+    expect(res.getBody().items[0].collectionId).to.equal(null);
+  });
+}

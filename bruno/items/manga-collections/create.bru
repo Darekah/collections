@@ -1,0 +1,43 @@
+meta {
+  name: Create manga collection
+  type: http
+  seq: 3
+}
+
+docs {
+  # Create manga collection
+
+  Returns `201` with the created collection. Copy the returned `id`
+  into the `collectionId` variable of the `local` environment — manga
+  volumes use it via `collectionId` to link back to this collection.
+}
+
+post {
+  url: {{baseUrl}}/api/manga-collections
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  {
+    "title": "Berserk (Complete Edition)",
+    "originalTitle": "ベルセルク",
+    "description": "Dark fantasy series by Kentaro Miura.",
+    "year": 1989,
+    "coverUrl": "https://example.com/berserk.jpg",
+    "author": "Kentaro Miura",
+    "artist": "Kentaro Miura"
+  }
+}
+
+tests {
+  test("creates collection: 201, type=MANGA_COLLECTION", function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().type).to.equal("MANGA_COLLECTION");
+    expect(res.getBody().author).to.equal("Kentaro Miura");
+  });
+}

@@ -1,0 +1,44 @@
+meta {
+  name: Upsert batch (create multiple)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/mangas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  [
+    {
+      "title": "Naruto Vol. 1",
+      "originalTitle": "ナルト 1",
+      "year": 1999,
+      "author": "Masashi Kishimoto",
+      "volumeNumber": 1,
+      "isbn": "9781569319000"
+    },
+    {
+      "title": "Naruto Vol. 2",
+      "originalTitle": "ナルト 2",
+      "year": 2000,
+      "author": "Masashi Kishimoto",
+      "volumeNumber": 2,
+      "isbn": "9781591161783"
+    }
+  ]
+}
+
+tests {
+  test("creates batch: 200, createdCount=2", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().totalProcessed).to.equal(2);
+    expect(res.getBody().createdCount).to.equal(2);
+  });
+}

@@ -1,0 +1,43 @@
+meta {
+  name: Upsert manga by id (update)
+  type: http
+  seq: 6
+}
+
+docs {
+  # Upsert manga by id — update
+
+  Requires `itemId` set to an existing manga id.
+}
+
+post {
+  url: {{baseUrl}}/api/mangas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  {
+    "id": {{itemId}},
+    "title": "Chainsaw Man Vol. 1 (Revised)",
+    "originalTitle": "チェンソーマン 1",
+    "year": 2019,
+    "author": "Tatsuki Fujimoto",
+    "artist": "Tatsuki Fujimoto",
+    "volumeNumber": 1,
+    "isbn": "9788467941746"
+  }
+}
+
+tests {
+  test("updates manga: 200, updatedCount=1", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().updatedCount).to.equal(1);
+    expect(res.getBody().createdCount).to.equal(0);
+    expect(res.getBody().items[0].id).to.equal(Number(vars.get("itemId")));
+  });
+}

@@ -1,0 +1,42 @@
+meta {
+  name: Upsert manga by ISBN (update)
+  type: http
+  seq: 7
+}
+
+docs {
+  # Upsert manga by ISBN — update
+
+  Matches an existing manga by its normalized `isbn` (no `id` needed).
+  Requires a manga with `isbn` = `9784592135746` to exist —
+  the Berserk volume created by "Upsert manga volume" qualifies.
+}
+
+post {
+  url: {{baseUrl}}/api/mangas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  {
+    "title": "Berserk Vol. 3 (Kanzenban)",
+    "author": "Kentaro Miura",
+    "artist": "Kentaro Miura",
+    "volumeNumber": 3,
+    "isbn": "{{isbn}}"
+  }
+}
+
+tests {
+  test("updates manga matched by ISBN: 200, updatedCount=1", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().updatedCount).to.equal(1);
+    expect(res.getBody().createdCount).to.equal(0);
+    expect(res.getBody().items[0].isbn).to.equal("9784592135791");
+  });
+}

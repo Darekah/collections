@@ -1,0 +1,46 @@
+meta {
+  name: Upsert manga volume (linked to collection)
+  type: http
+  seq: 4
+}
+
+docs {
+  # Upsert manga volume — linked to collection
+
+  Requires `collectionId` set to an existing manga collection id
+  (run "Create manga collection" first and copy its `id`).
+  `collectionId` is optional — remove it for standalone volumes.
+}
+
+post {
+  url: {{baseUrl}}/api/mangas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: {{contentType}}
+}
+
+body:json {
+  {
+    "title": "Berserk Vol. 3",
+    "originalTitle": "ベルセルク 3",
+    "year": 1989,
+    "author": "Kentaro Miura",
+    "artist": "Kentaro Miura",
+    "volumeNumber": 3,
+    "isbn": "978-4-592-13579-1",
+    "collectionId": {{collectionId}}
+  }
+}
+
+tests {
+  test("creates volume linked to collection: 200, createdCount=1", function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().createdCount).to.equal(1);
+    expect(res.getBody().items[0].volumeNumber).to.equal(3);
+    expect(res.getBody().items[0].collectionId).to.equal(Number(vars.get("collectionId")));
+    expect(res.getBody().items[0].isbn).to.equal("9784592135791");
+  });
+}
