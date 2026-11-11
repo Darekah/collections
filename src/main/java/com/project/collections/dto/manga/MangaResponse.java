@@ -1,7 +1,7 @@
-package com.project.collections.dto;
+package com.project.collections.dto.manga;
 
 import com.project.collections.model.ItemType;
-import com.project.collections.model.Manga;
+import com.project.collections.model.manga.Manga;
 
 import java.time.Instant;
 
@@ -19,12 +19,9 @@ public record MangaResponse(
         String coverUrl,
         String author,
         String artist,
-        String publisher,
         Integer volumeNumber,
-        Integer totalVolumes,
         String isbn,
-        Integer pageCount,
-        String format,
+        Long collectionId,
         Instant createdAt,
         Instant updatedAt
 
@@ -41,12 +38,9 @@ public record MangaResponse(
                 manga.getCoverUrl(),
                 manga.getAuthor(),
                 manga.getArtist(),
-                manga.getPublisher(),
                 manga.getVolumeNumber(),
-                manga.getTotalVolumes(),
                 manga.getIsbn(),
-                manga.getPageCount(),
-                manga.getFormat(),
+                manga.getCollectionId(),
                 manga.getCreatedAt(),
                 manga.getUpdatedAt()
         );

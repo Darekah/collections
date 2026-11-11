@@ -12,9 +12,11 @@ public record ItemResponse(
 
         Long id,
         String title,
+        String originalTitle,
         String description,
         ItemType type,
         Integer year,
+        String coverUrl,
         Instant createdAt,
         Instant updatedAt
 
@@ -24,9 +26,11 @@ public record ItemResponse(
         return new ItemResponse(
                 item.getId(),
                 item.getTitle(),
+                item.getOriginalTitle(),
                 item.getDescription(),
                 item.getType(),
                 item.getYear(),
+                item.getCoverUrl(),
                 item.getCreatedAt(),
                 item.getUpdatedAt()
         );

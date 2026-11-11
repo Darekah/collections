@@ -22,15 +22,15 @@ import org.hibernate.annotations.DiscriminatorOptions;
 import java.time.Instant;
 
 /**
- * Base cultural item entity. Acts as the root lookup table for all items in the collection.
- * Subclasses hold media-specific attributes using JOINED table inheritance.
+ * Abstract base cultural item entity. Acts as the root lookup table for all items in the collection.
+ * Never instantiated directly — subclasses hold media-specific attributes using JOINED table inheritance.
  */
 @Entity
 @Table(name = "items")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", columnDefinition = "varchar(20)")
 @DiscriminatorOptions(force = true)
-public class Item {
+public abstract class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,12 +75,6 @@ public class Item {
         this.description = description;
         this.year = year;
         this.coverUrl = coverUrl;
-    }
-
-    // Convenience constructor for legacy/simple usage
-    public Item(String title, String description, ItemType type, Integer year) {
-        this(title, null, description, year, null);
-        this.type = type;
     }
 
     @PrePersist

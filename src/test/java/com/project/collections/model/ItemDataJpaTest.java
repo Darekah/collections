@@ -1,7 +1,10 @@
 package com.project.collections.model;
 
+import com.project.collections.model.manga.Manga;
+import com.project.collections.model.manga.MangaCollection;
 import com.project.collections.repository.ItemRepository;
-import com.project.collections.repository.MangaRepository;
+import com.project.collections.repository.manga.MangaCollectionRepository;
+import com.project.collections.repository.manga.MangaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -26,6 +29,9 @@ class ItemDataJpaTest {
     @Autowired
     private MangaRepository mangaRepository;
 
+    @Autowired
+    private MangaCollectionRepository mangaCollectionRepository;
+
     @Test
     void persistAndReadBack_manga_persistsJoinedTablesAndReadsPolymorphically() {
         Manga manga = new Manga(
@@ -36,12 +42,8 @@ class ItemDataJpaTest {
                 "https://example.com/csm1.jpg",
                 "Tatsuki Fujimoto",
                 null,
-                "Norma Editorial",
                 1,
-                null,
-                "9788467941746",
-                192,
-                "TANKOBON"
+                "9788467941746"
         );
 
         Manga saved = entityManager.persistFlushFind(manga);
@@ -51,10 +53,8 @@ class ItemDataJpaTest {
         assertEquals("チェンソーマン 1", saved.getOriginalTitle());
         assertEquals(ItemType.MANGA, saved.getType());
         assertEquals("Tatsuki Fujimoto", saved.getAuthor());
-        assertEquals("Norma Editorial", saved.getPublisher());
         assertEquals(Integer.valueOf(1), saved.getVolumeNumber());
         assertEquals("9788467941746", saved.getIsbn());
-        assertEquals(Integer.valueOf(192), saved.getPageCount());
         assertNotNull(saved.getCreatedAt());
         assertNotNull(saved.getUpdatedAt());
 
@@ -69,6 +69,26 @@ class ItemDataJpaTest {
         Optional<Manga> byIsbn = mangaRepository.findByIsbn("9788467941746");
         assertTrue(byIsbn.isPresent());
         assertEquals(saved.getId(), byIsbn.get().getId());
+    }
+
+    @Test
+    void persistAndReadBack_mangaVolumeLinkedToCollection_persistsBothJoinedTables() {
+        MangaCollection collection = entityManager.persistFlushFind(new MangaCollection(
+                "Berserk (Complete)", null, null, null, null,
+                "Kentaro Miura", null
+        ));
+        assertNotNull(collection.getId());
+        assertEquals(ItemType.MANGA_COLLECTION, collection.getType());
+
+        Manga volume = new Manga(
+                "Berserk Vol. 3", null, null, 1989, null,
+                "Kentaro Miura", null, 3, "9784592135791"
+        );
+        volume.setCollection(collection);
+        Manga savedVolume = entityManager.persistFlushFind(volume);
+
+        assertEquals(collection.getId(), savedVolume.getCollectionId());
+        assertEquals(1, mangaRepository.findByCollection_Id(collection.getId()).size());
     }
 
 }

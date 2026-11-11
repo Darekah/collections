@@ -1,9 +1,9 @@
-package com.project.collections.controller;
+package com.project.collections.controller.manga;
 
-import com.project.collections.dto.MangaBatchResponse;
-import com.project.collections.dto.MangaRequest;
-import com.project.collections.dto.MangaResponse;
-import com.project.collections.service.MangaService;
+import com.project.collections.dto.manga.MangaBatchResponse;
+import com.project.collections.dto.manga.MangaRequest;
+import com.project.collections.dto.manga.MangaResponse;
+import com.project.collections.service.manga.MangaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

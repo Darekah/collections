@@ -2,6 +2,7 @@ package com.project.collections.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +22,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleItemNotFound(ItemNotFoundException exception) {
         ErrorResponse body = ErrorResponse.of(HttpStatus.NOT_FOUND.value(), exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ConflictException exception) {
+        ErrorResponse body = ErrorResponse.of(HttpStatus.CONFLICT.value(), exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException exception) {
+        ErrorResponse body = ErrorResponse.of(
+                HttpStatus.CONFLICT.value(),
+                "Data integrity violation: the request conflicts with existing data"
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

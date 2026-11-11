@@ -1,15 +1,21 @@
-package com.project.collections.model;
+package com.project.collections.model.manga;
 
+import com.project.collections.model.Item;
+import com.project.collections.model.ItemType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * Concrete cultural item representing a manga volume or series entry.
+ * Concrete cultural item representing a manga volume or edition.
  * Stored in the 'mangas' table, joined with parent 'items' on 'id'.
+ * A volume may belong to a {@link MangaCollection} through {@link #collection}.
  */
 @Entity
 @Table(name = "mangas")
@@ -25,26 +31,16 @@ public class Manga extends Item {
     @Column(length = 255)
     private String artist;
 
-    @Size(max = 100)
-    @Column(length = 100)
-    private String publisher;
-
     @Column(name = "volume_number")
     private Integer volumeNumber;
 
-    @Column(name = "total_volumes")
-    private Integer totalVolumes;
-
     @Size(max = 20)
-    @Column(length = 20)
+    @Column(name = "isbn", length = 20, unique = true)
     private String isbn;
 
-    @Column(name = "page_count")
-    private Integer pageCount;
-
-    @Size(max = 50)
-    @Column(length = 50)
-    private String format;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collection_id")
+    private MangaCollection collection;
 
     protected Manga() {
         super();
@@ -58,22 +54,14 @@ public class Manga extends Item {
                  String coverUrl,
                  String author,
                  String artist,
-                 String publisher,
                  Integer volumeNumber,
-                 Integer totalVolumes,
-                 String isbn,
-                 Integer pageCount,
-                 String format) {
+                 String isbn) {
         super(title, originalTitle, description, year, coverUrl);
         this.setType(ItemType.MANGA);
         this.author = author;
         this.artist = artist;
-        this.publisher = publisher;
         this.volumeNumber = volumeNumber;
-        this.totalVolumes = totalVolumes;
-        this.isbn = isbn;
-        this.pageCount = pageCount;
-        this.format = format;
+        this.isbn = normalizeIsbn(isbn);
     }
 
     public String getAuthor() {
@@ -92,14 +80,6 @@ public class Manga extends Item {
         this.artist = artist;
     }
 
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
     public Integer getVolumeNumber() {
         return volumeNumber;
     }
@@ -108,36 +88,28 @@ public class Manga extends Item {
         this.volumeNumber = volumeNumber;
     }
 
-    public Integer getTotalVolumes() {
-        return totalVolumes;
-    }
-
-    public void setTotalVolumes(Integer totalVolumes) {
-        this.totalVolumes = totalVolumes;
-    }
-
     public String getIsbn() {
         return isbn;
     }
 
     public void setIsbn(String isbn) {
-        this.isbn = isbn;
+        this.isbn = normalizeIsbn(isbn);
     }
 
-    public Integer getPageCount() {
-        return pageCount;
+    public static String normalizeIsbn(String isbn) {
+        return isbn == null ? null : isbn.replaceAll("[\\s-]", "");
     }
 
-    public void setPageCount(Integer pageCount) {
-        this.pageCount = pageCount;
+    public MangaCollection getCollection() {
+        return collection;
     }
 
-    public String getFormat() {
-        return format;
+    public void setCollection(MangaCollection collection) {
+        this.collection = collection;
     }
 
-    public void setFormat(String format) {
-        this.format = format;
+    public Long getCollectionId() {
+        return collection == null ? null : collection.getId();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.project.collections.dto;
+package com.project.collections.dto.manga;
 
 import java.util.List;
 

@@ -1,11 +1,13 @@
-package com.project.collections.dto;
+package com.project.collections.dto.manga;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * Payload accepted when creating or updating a Manga.
+ * Payload accepted when creating or updating a Manga (a volume/edition).
  * Includes both common Item attributes and Manga-specific attributes.
+ * {@code collectionId} optionally links the volume to a MangaCollection
+ * (see /api/manga-collections).
  */
 public record MangaRequest(
 
@@ -33,20 +35,12 @@ public record MangaRequest(
         @Size(max = 255)
         String artist,
 
-        @Size(max = 100)
-        String publisher,
-
         Integer volumeNumber,
-
-        Integer totalVolumes,
 
         @Size(max = 20)
         String isbn,
 
-        Integer pageCount,
-
-        @Size(max = 50)
-        String format
+        Long collectionId
 
 ) {
 }
